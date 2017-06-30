@@ -1,0 +1,60 @@
+html {
+	width: 100%; height: 1px;
+	min-width: 512px;
+	min-height: 100%;
+	
+	background: rgba(0,0,255,0.1);
+}
+
+body {
+	width: auto; height: 1px;
+    min-height: 100%;
+    margin: 0; padding: 0;
+	
+	display: block; position: relative;
+	
+	background: rgba(0,0,255,0.1);
+}
+
+#content {
+	width: auto; height: auto;
+	min-width: 1024px; 
+	max-width: 1568px;
+	min-height: 100%;
+	margin: 0 auto; padding: 0; 
+	padding-bottom: 0;
+	
+	position: relative;
+	
+	background: rgba(0,0,255,0.1);
+}
+
+#content > header {
+	background: rgba(0,255,255,0.3);
+	border-bottom: 1px solid black;
+}
+
+#content > header > div {
+	width: auto; height: auto;
+	margin: 0 5em 0 0; padding: 0;
+	
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+#content > header > div > h1 {
+	width: auto; height: auto;
+	margin: 0; padding: 0.75em 1em;
+	padding-bottom: 0;
+	
+	font-family: futured;
+}
+
+#content > header > div > h3 {
+	width: auto; height: auto;
+	margin: 0; padding: 0.75em 1em;
+	margin-left: 0.75em;
+	padding-top: 0.25em;
+	
+	font-family: futured;
+}
