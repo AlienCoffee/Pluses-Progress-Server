@@ -14,5 +14,9 @@
 	define (__time_offset__, +3); // In hours from UTC
 	                               // +3 - Moscow
 	define (__def_request__, "home");
+	define (__def_token__, "empty-token-value");
+	
+	// Support defines
+	define (br, "<br />\n");
 	
 ?>

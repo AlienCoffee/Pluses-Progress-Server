@@ -1,0 +1,34 @@
+{
+	"home": {
+		"type": "page",
+		"src": "index.php",
+		"name": "Home page",
+		"visible": "visible",
+		"rights": "v",
+		"author": "Shemplo"
+	},
+	"api/users.newUser": {
+		"type": "method",
+		"src": "local/engine/php/users_manip.php",
+		"call": "register",
+		"visible": "visible",
+		"rights": "v",
+		"author": "Shemplo"
+	},
+	"api/users.removeUser": {
+		"type": "method",
+		"src": "local/engine/php/users_manip.php",
+		"call": "remove",
+		"visible": "visible",
+		"rights": "vu",
+		"author": "Shemplo"
+	},
+	"api/users.getUser": {
+		"type": "method",
+		"src": "local/engine/php/users_manip.php",
+		"call": "get_user_data",
+		"visible": "visible",
+		"rights": "vu",
+		"author": "Shemplo"
+	}
+}
