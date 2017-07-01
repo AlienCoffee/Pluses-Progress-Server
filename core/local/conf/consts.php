@@ -11,12 +11,19 @@
 	
 	// Info about host and site
 	define (__domain__, $_SERVER ['SERVER_NAME']);
-	define (__time_offset__, +3); // In hours from UTC
-	                               // +3 - Moscow
+	define (__db_time_offset__, +3);
+	define (__server_time_offset__, +3); // In hours from UTC
+										  // +3 - Moscow
 	define (__def_request__, "home");
 	define (__def_token__, "empty-token-value");
+	define (__db_profile__, "localhost");
 	
 	// Support defines
 	define (br, "<br />\n");
+	
+	// Security
+	define (__key1__, "some value");
+	define (__key2__, "some value");
+	define (__key3__, "some value");
 	
 ?>

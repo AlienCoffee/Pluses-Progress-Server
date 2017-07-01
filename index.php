@@ -3,6 +3,9 @@
 	// Loading configuration (all constants that can be useful)
 	require_once $_SERVER ['DOCUMENT_ROOT']."/core/local/conf/consts.php";
 	require_once __engine__."/php/users_manip.php";
+	require_once __engine__."/php/utils.php";
+	require_once __engine__."/php/db.php";
+	UsersManip::set_db ($_db);
 	
 	$_request = $_SERVER ['REQUEST_URI'];
 	
@@ -65,8 +68,7 @@
 			$_token = htmlspecialchars ($_context ['token']);
 			$_token = trim ($_token);
 		} else {
-			echo ("[ERROR] Access token was not found in arguments");
-			exit (0);
+			$_token = __def_token__;
 		}
 	} else {
 		echo ("[WARNING] Unsupported request method (use GET or POST only)".br);
@@ -75,5 +77,8 @@
 	
 	// Identifying user by given token
 	$_user = UsersManip::identify ($_token);
+	//UsersManip::register ("+7(123)1231212", md5 ("test"), "");
+	//UsersManip::authorize ("+7(123)1231212", md5 ("test"), "device", "123");
+	print_r ($_user);
 	
 ?>
