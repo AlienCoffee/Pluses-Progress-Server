@@ -22,11 +22,57 @@
 				return $user;
 			}
 			
+			$token = Utils::clear_spaces ($token);
+			
+			$startTimer = microtime (true);
+			$db_answer = $db->query ("
+				SELECT `phone`, 
+						`rights`,
+						`name`,
+						`second_name`,
+						`last_name`,
+						`birthday`,
+						`type`,
+						`ip_address`
+				FROM `sessions`
+				LEFT JOIN `users`
+					ON `sessions`.`user_id` = `users`.`id`
+				LEFT JOIN `users_data`
+					ON `users`.`data_id` = `users_data`.`id`
+				LEFT JOIN `devices`
+					ON `sessions`.`device_id` = `devices`.`id`
+				WHERE `token` = '$token'
+				LIMIT 1
+			");
+			$endTimer = microtime (true);
+			//echo ("DB Transaction time: ".round ($endTimer - $startTimer, 3).br);
+			
+			if ($db_answer->num_rows) { $user = $db_answer->fetch_assoc (); }
 			return $user; 
 		}
 		
 		public static function has_access ($user, $need) {
-			return false;
+			if (!$user || !isset ($user ['rights'])) {
+				return false;
+			}
+			
+			$user_rights = $user ['rights'];
+			$access = true;
+			
+			for ($i = 0; $i < strlen ($need); $i ++) {
+				$user_position = $i < strlen ($user_rights)
+									? $user_rights [$i]
+									: "*";
+				$need_position = $need [$i];
+				
+				if ($need_position != "*" 
+						&& $user_position != $need_position) {
+					$access = false;
+					break;
+				}
+			}
+			
+			return $access;
 		}
 		
 		public static function authorize ($phone, $hpass, $device, $device_key) {
@@ -260,6 +306,7 @@
 			// Finishing registration
 			$answer = Array (
 				'type' => "success",
+				'code' => "200",
 				'message' => "successfully registered"
 			);
 			

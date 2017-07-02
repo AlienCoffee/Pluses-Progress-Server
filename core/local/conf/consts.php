@@ -7,6 +7,7 @@
 	define (__frames__, __local__."/frames");
 	define (__engine__, __local__."/engine");
 	define (__conf__, __local__."/conf");
+	define (__core__, __root__."/core");
 	define (__logs__, __root__."/logs");
 	
 	// Info about host and site

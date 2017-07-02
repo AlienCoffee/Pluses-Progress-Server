@@ -25,19 +25,46 @@
 									."://".__domain__."/".$_request);
 	parse_str ($_request_parsed ['query'], $_context);
 	
-	// Loading iformation about pages
+	// Loading information about pages
 	$_pages_file = __conf__."/pages.json";
 	$_pages_data = @file_get_contents ($_pages_file);
 	if ($_pages_data === false) {
-		echo ("[DEBUG] Failed to find file with pages configuration".br);
-		exit (0);
+		$answer = Array (
+			'type' => "error",
+			'code' => "",
+			'message' => "failed to find file with pages configuration"
+		); end_loading ($answer);
 	}
 	
 	$_pages_data = utf8_encode ($_pages_data);
 	$_pages = @json_decode ($_pages_data, true);
 	if ($_pages === null) {
-		echo ("[DEBUG] Failed to parse file with pages configuration".br);
-		exit (0);
+		$answer = Array (
+			'type' => "error",
+			'code' => "",
+			'message' => "failed to parse file with pages configuration"
+		); end_loading ($answer);
+	}
+	
+	// Loading information about methods
+	$_methods_file = __conf__."/methods.json";
+	$_methods_data = @file_get_contents ($_methods_file);
+	if ($_methods_data === false) {
+		$answer = Array (
+			'type' => "error",
+			'code' => "",
+			'message' => "failed to find file with methods configuration"
+		); end_loading ($answer);
+	}
+	
+	$_methods_data = utf8_encode ($_methods_data);
+	$_methods = @json_decode ($_methods_data, true);
+	if ($_pages === null) {
+		$answer = Array (
+			'type' => "error",
+			'code' => "",
+			'message' => "failed to parse file with methods configuration"
+		); end_loading ($answer);
 	}
 	
 	// Detecting what kind of request got
@@ -52,9 +79,15 @@
 		if (isset ($_POST ['token'])) {
 			$_token = htmlspecialchars ($_POST ['token']);
 			$_token = trim ($_token);
+			
+			// Storing arguments from POST
+			$_context = array_merge ($_context, $_POST);
 		} else {
-			echo ("[ERROR] Access token was not found in arguments");
-			exit (0);
+			$answer = Array (
+				'type' => "error",
+				'code' => "",
+				'message' => "access token was not found in arguments"
+			); end_loading ($answer);
 		}
 	} else if ($_request_method == "GET") {
 		// Site request -> token must be in cookie
@@ -77,8 +110,97 @@
 	
 	// Identifying user by given token
 	$_user = UsersManip::identify ($_token);
-	//UsersManip::register ("+7(123)1231212", md5 ("test"), "");
-	//UsersManip::authorize ("+7(123)1231212", md5 ("test"), "device", "123");
-	print_r ($_user);
+	
+	// Searching for the requested path
+	$_requested_path = $_request_parsed ['path'][0] == '/'
+						? substr ($_request_parsed ['path'], 1)
+						: $_request_parsed ['path'];
+						
+	$_is_page = array_key_exists ($_requested_path, $_pages);
+	$_is_method = array_key_exists ($_requested_path, $_methods);
+	if ($_is_page || $_is_method) {
+		$_object = null;
+		$_src_path = "";
+		
+		if ($_is_page) {
+			$_object = $_pages [$_requested_path];
+			$_src_path = __frames__."/".$_object ['src'];
+		} else if ($_is_method) {
+			$_object = $_methods [$_requested_path];
+			$_src_path = __core__."/".$_object ['src'];
+		}
+		
+		if (!UsersManip::has_access ($_user, $_object ['rights'])) {
+			$answer = Array (
+				'type' => "error",
+				'code' => "403", // Not sure
+				'message' => "access forbiden"
+			); end_loading ($answer);
+		}
+		
+		
+		if (!isset ($_object ['src']) || !file_exists ($_src_path)) {
+			$answer = Array (
+				'type' => "error",
+				'code' => "",
+				'message' => "requested file not implemented"
+			); end_loading ($answer);
+		}
+		
+		if ($_object ['visible'] != "visible") {
+			$answer = Array (
+				'type' => "error",
+				'code' => "",
+				'message' => "path can't be reached"
+			); end_loading ($answer);
+		}
+		
+		// Including requested file
+		require_once $_src_path; // ...
+		
+		if ($_is_method) {
+			$arguments = $_object ['arguments'];
+			foreach ($arguments as $key => $value) {
+				$is_nec = ($value && $value [0] != "?");
+				if (!$is_nec) { $value = substr ($value, 1); }
+				
+				if (!array_key_exists ($value, $_context) 
+						&& $is_nec) {
+					$answer = Array (
+						'type' => "error",
+						'code' => "",
+						'message' => "argument `$value` missed"
+					); end_loading ($answer);
+				}
+			}
+			
+			$class_name = $_object ['class'];
+			$method_name = $_object ['call'];
+			$answer = Array (
+				'type' => "error",
+				'code' => "",
+				'message' => "failed to call requested method"
+			);
+			
+			@call_user_func_array ("$class_name::$method_name", $_context);
+		}
+		
+		end_loading (null);
+	} else {
+		$answer = Array (
+			'type' => "error",
+			'code' => "404",
+			'message' => "requested path not found"
+		); end_loading ($answer);
+	}
+	
+	function end_loading ($answer) {
+		if ($answer != null) {
+			echo (json_encode ($answer));
+		}
+		
+		@$db->close ();
+		exit (0);
+	}
 	
 ?>

@@ -1,0 +1,38 @@
+{
+	"ping": {
+		"src": "api/ping.php",
+		"class": "Ping",
+		"call": "call",
+		"arguments": [],
+		"visible": "visible",
+		"rights": "",
+		"author": "Shemplo"
+	},
+	"api/users.newUser": {
+		"src": "local/engine/php/users_manip.php",
+		"class": "UsersManip",
+		"call": "register",
+		"arguments": ["phone", "hpass", "?hcode"],
+		"visible": "visible",
+		"rights": "v",
+		"author": "Shemplo"
+	},
+	"api/users.removeUser": {
+		"src": "local/engine/php/users_manip.php",
+		"class": "UsersManip",
+		"call": "remove",
+		"arguments": ["user_id"],
+		"visible": "visible",
+		"rights": "vu",
+		"author": "Shemplo"
+	},
+	"api/users.getUser": {
+		"src": "local/engine/php/users_manip.php",
+		"class": "UsersManip",
+		"call": "get_user_data",
+		"arguments": ["user_id"],
+		"visible": "visible",
+		"rights": "vu",
+		"author": "Shemplo"
+	}
+}
