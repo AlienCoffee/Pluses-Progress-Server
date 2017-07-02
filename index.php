@@ -160,6 +160,7 @@
 		
 		if ($_is_method) {
 			$arguments = $_object ['arguments'];
+			$args = Array ();
 			foreach ($arguments as $key => $value) {
 				$is_nec = ($value && $value [0] != "?");
 				if (!$is_nec) { $value = substr ($value, 1); }
@@ -172,6 +173,8 @@
 						'message' => "argument `$value` missed"
 					); end_loading ($answer);
 				}
+				
+				$args [] = $_context [$value];
 			}
 			
 			$class_name = $_object ['class'];
@@ -182,7 +185,7 @@
 				'message' => "failed to call requested method"
 			);
 			
-			@call_user_func_array ("$class_name::$method_name", $_context);
+			@call_user_func_array ("$class_name::$method_name", $args);
 		}
 		
 		end_loading (null);

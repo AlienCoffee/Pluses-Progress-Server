@@ -84,8 +84,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			// Check entered data
@@ -107,8 +106,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			$db_user = $db_answer->fetch_assoc ();
@@ -119,8 +117,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			$user_id = $db_user ['id'];
@@ -174,8 +171,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			$timestamp = sha1 (time ().Utils::random_string (8));
@@ -207,8 +203,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			$phone = UsersManip::check_phone ($phone, $db);
@@ -228,8 +223,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				$db->close ();
-				exit (0);
+				return;
 			}
 			
 			$salt = __key1__;
@@ -251,8 +245,7 @@
 					);
 					
 					echo (json_encode ($answer));
-					$db->close ();
-					exit (0);
+					return;
 				}
 				
 				$rights = $db_answer->fetch_assoc () ['rights'];
@@ -313,12 +306,57 @@
 			echo (json_encode ($answer));
 		}
 		
+		// NOTICE: Unsecured (need to be rewritten)
 		public static function remove ($id) {
 			
 		}
 	
+		// NOTICE: Unsecured (need to be rewritten)
 		public static function get_user_data ($id) {
+			$_user = $GLOBALS ['_user'];
 			
+			// Data is already loaded
+			if ($id == $_user ['id']) {
+				return json_encode ($_user);
+			}
+			
+			$db = UsersManip::$db;
+			if ($db == null) {
+				$answer = Array (
+					'type' => "error",
+					'message' => "database internal error"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$id = Utils::clear_spaces ($id);
+			$db_answer = $db->query ("
+				SELECT `phone`,
+						`rights`,
+						`name`,
+						`second_name`,
+						`last_name`,
+						`birthday`
+				FROM `users`
+				LEFT JOIN `users_data`
+					ON `users`.`data_id` = `users_data`.`id`
+				WHERE `users`.`id` = '$id'
+				LIMIT 1
+			") or die ($db->error.br);
+			
+			if ($db_answer->num_rows != 1) {
+				$answer = Array (
+					'type' => "error",
+					'message' => "user with given id doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			echo (json_encode ($db_answer->fetch_assoc ()));
 		}
 		
 		private static function check_phone ($phone, $db) {

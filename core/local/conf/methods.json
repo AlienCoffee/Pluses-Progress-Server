@@ -5,7 +5,7 @@
 		"call": "call",
 		"arguments": [],
 		"visible": "visible",
-		"rights": "",
+		"rights": "v",
 		"author": "Shemplo"
 	},
 	"api/users.newUser": {
@@ -23,7 +23,7 @@
 		"call": "remove",
 		"arguments": ["user_id"],
 		"visible": "visible",
-		"rights": "vu",
+		"rights": "vuc",
 		"author": "Shemplo"
 	},
 	"api/users.getUser": {
@@ -32,7 +32,7 @@
 		"call": "get_user_data",
 		"arguments": ["user_id"],
 		"visible": "visible",
-		"rights": "vu",
+		"rights": "vuc",
 		"author": "Shemplo"
 	}
 }
