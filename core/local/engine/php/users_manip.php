@@ -308,7 +308,67 @@
 		
 		// NOTICE: Unsecured (need to be rewritten)
 		public static function remove ($id) {
+			$_user = $GLOBALS ['_user'];
 			
+			$db = UsersManip::$db;
+			if ($db == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "database internal error"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$id = Utils::clear_spaces ($id);
+			$db_answer = $db->query ("
+				SELECT `data_id`
+				FROM `users`
+				WHERE `id` = '$id'
+				LIMIT 1
+			");
+			
+			if ($db_answer->num_rows == 0) {
+				$answer = Array (
+					'type' => "success",
+					'code' => "",
+					'message' => "user doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$data_id = $db_answer->fetch_assoc () ['data_id'];
+			$db->query ("
+				DELETE 
+				FROM `sessions`
+				WHERE `user_id` = '$id'
+			") or die ($db->error." ".__LINE__.br);
+			$db->query ("
+				DELETE
+				FROM `users`
+				WHERE `id` = '$id'
+				LIMIT 1
+			") or die ($db->error." ".__LINE__.br);
+			$db->query ("
+				DELETE
+				FROM `users_data`
+				WHERE `id` = '$data_id'
+				LIMIT 1
+			") or die ($db->error." ".__LINE__.br);
+			
+			// TODO: Delete from the group
+			
+			$answer = Array (
+				'type' => "success",
+				'code' => "",
+				'message' => "user removed"
+			);
+			
+			echo (json_encode ($answer));
 		}
 	
 		// NOTICE: Unsecured (need to be rewritten)
