@@ -79,5 +79,14 @@
 		"visible": "visible",
 		"rights": "v*cg",
 		"author": "Shemplo"
+	},
+	"api/topics.newTopic": {
+		"src": "api/topics_manip.php",
+		"class": "TopicsManip",
+		"call": "create",
+		"arguments": ["name"],
+		"visible": "visible",
+		"rights": "v*c*t",
+		"author": "Shemplo"
 	}
 }

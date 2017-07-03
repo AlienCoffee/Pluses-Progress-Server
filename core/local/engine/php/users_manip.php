@@ -26,7 +26,8 @@
 			
 			$startTimer = microtime (true);
 			$db_answer = $db->query ("
-				SELECT `phone`, 
+				SELECT `users`.`id`,
+						`phone`, 
 						`rights`,
 						`name`,
 						`second_name`,
@@ -431,6 +432,8 @@
 			}
 			
 			$user = $db_answer->fetch_assoc ();
+			$user ['id'] = $id;
+			
 			echo (json_encode ($user));
 			return $user;
 		}
