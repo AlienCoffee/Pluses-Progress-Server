@@ -404,7 +404,7 @@
 					ON `users`.`data_id` = `users_data`.`id`
 				WHERE `users`.`id` = '$id'
 				LIMIT 1
-			") or die ($db->error.br);
+			");
 			
 			if ($db_answer->num_rows != 1) {
 				$answer = Array (

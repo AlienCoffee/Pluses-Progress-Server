@@ -43,5 +43,23 @@
 		"visible": "visible",
 		"rights": "vucg",
 		"author": "Shemplo"
+	},
+	"api/groups.addUser": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "add_user",
+		"arguments": ["group_id", "user_id"],
+		"visible": "visible",
+		"rights": "vucg",
+		"author": "Shemplo"
+	},
+	"api/groups.getGroup": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "get_group_data",
+		"arguments": ["id"],
+		"visible": "visible",
+		"rights": "v*cg",
+		"author": "Shemplo"
 	}
 }

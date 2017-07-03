@@ -92,7 +92,7 @@
 					FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 				) COMMENT = ''
 				COLLATE 'utf8_unicode_ci'
-			") or die ($db->error);
+			");
 			
 			$table_topics_name = "group_".$group_id."_topics";
 			$db->query ("
@@ -100,14 +100,142 @@
 				TABLE `$table_topics_name`
 				(
 					`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-					`user_id` int(11) NOT NULL,
+					`topic_id` int(11) NOT NULL,
 					`table_results` mediumtext NOT NULL,
 					`start_time` datetime NOT NULL,
 					`end_time` datetime NOT NULL,
-					FOREIGN KEY (`user_id`) REFERENCES `topics` (`id`)
+					FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
 				) COMMENT = ''
 				COLLATE 'utf8_unicode_ci'
-			") or die ($db->error);
+			");
+			
+			$db_answer = $db->query ("
+				UPDATE `groups`
+				SET `table_list` = '$table_list_name',
+					`table_topics` = '$table_topics_name'
+				WHERE `id` = '$group_id'
+				LIMIT 1
+			");
+			
+			// Finishing registration
+			$answer = Array (
+				'type' => "success",
+				'code' => "200",
+				'message' => "successfully created"
+			);
+			
+			echo (json_encode ($answer));
+		}
+		
+		public static function get_group_data ($id) {
+			$_user = $GLOBALS ['_user'];
+			$db = $GLOBALS ['_db'];
+			if ($db == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "database internal error"
+				);
+				
+				echo (json_encode ($answer));
+				return null;
+			}
+			
+			$id = Utils::clear_spaces ($id);
+			$db_answer = $db->query ("
+				SELECT *
+				FROM `groups`
+				WHERE `id` = '$id'
+				LIMIT 1
+			");
+			
+			if ($db_answer->num_rows != 1) {
+				$answer = Array (
+					'type' => "error",
+					'message' => "group with given id doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return null;
+			}
+			
+			$group = $db_answer->fetch_assoc ();
+			echo (json_encode ($group));
+			return $group;
+		}
+		
+		public static function add_user ($group_id, $user_id) {
+			$db = $GLOBALS ['_db'];
+			if ($db == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "database internal error"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$group_id= Utils::clear_spaces ($group_id);
+			$user_id= Utils::clear_spaces ($user_id);
+			
+			if (!$group_id || !$user_id) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "illegal arguments (group_id or user_id is empty)"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			ob_start ();
+			$group = GroupsManip::get_group_data ($group_id);
+			ob_clean ();
+			
+			if ($group == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "group doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			ob_start ();
+			$user = UsersManip::get_user_data ($user_id);
+			ob_clean ();
+			
+			if ($user == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "user doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$table_list_name = $group ['table_list'];
+			$db_answer = $db->query ("
+				INSERT
+				INTO `$table_list_name` (`user_id`, `join_time`, `leave_time`)
+				VALUES($user_id, UTC_TIMESTAMP(), UTC_TIMESTAMP())
+			");
+			
+			// Finishing registration
+			$answer = Array (
+				'type' => "success",
+				'code' => "200",
+				'message' => "successfully added"
+			);
+			
+			echo (json_encode ($answer));
 		}
 		
 	}
