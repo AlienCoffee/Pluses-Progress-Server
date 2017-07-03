@@ -59,7 +59,7 @@
 	
 	$_methods_data = utf8_encode ($_methods_data);
 	$_methods = @json_decode ($_methods_data, true);
-	if ($_pages === null) {
+	if ($_methods === null) {
 		$answer = Array (
 			'type' => "error",
 			'code' => "",

@@ -32,7 +32,16 @@
 		"call": "get_user_data",
 		"arguments": ["user_id"],
 		"visible": "visible",
-		"rights": "vuc",
+		"rights": "v*c",
+		"author": "Shemplo"
+	},
+	"api/groups.newGroup": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "create",
+		"arguments": ["name", "head_teacher"],
+		"visible": "visible",
+		"rights": "vucg",
 		"author": "Shemplo"
 	}
 }

@@ -388,7 +388,7 @@
 				);
 				
 				echo (json_encode ($answer));
-				return;
+				return null;
 			}
 			
 			$id = Utils::clear_spaces ($id);
@@ -413,10 +413,12 @@
 				);
 				
 				echo (json_encode ($answer));
-				return;
+				return null;
 			}
 			
-			echo (json_encode ($db_answer->fetch_assoc ()));
+			$user = $db_answer->fetch_assoc ();
+			echo (json_encode ($user));
+			return $user;
 		}
 		
 		private static function check_phone ($phone, $db) {
