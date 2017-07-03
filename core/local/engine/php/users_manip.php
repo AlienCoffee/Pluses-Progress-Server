@@ -342,25 +342,39 @@
 			}
 			
 			$data_id = $db_answer->fetch_assoc () ['data_id'];
+			require_once __core__."/api/groups_manip.php";
+			
+			for ($i = 0; $i < $db_answer->num_rows; $i ++) {
+				$group_id = $db_answer->fetch_assoc () ['id'];
+				
+				ob_start ();
+				GroupsManip::remove_user ($group_id, $id);
+				ob_clean ();
+			}
+			
 			$db->query ("
 				DELETE 
 				FROM `sessions`
 				WHERE `user_id` = '$id'
-			") or die ($db->error." ".__LINE__.br);
+			");
 			$db->query ("
 				DELETE
 				FROM `users`
 				WHERE `id` = '$id'
 				LIMIT 1
-			") or die ($db->error." ".__LINE__.br);
+			");
 			$db->query ("
 				DELETE
 				FROM `users_data`
 				WHERE `id` = '$data_id'
 				LIMIT 1
-			") or die ($db->error." ".__LINE__.br);
+			");
 			
 			// TODO: Delete from the group
+			$db_answer = $db->query ("
+				SELECT `id`
+				FROM `groups`
+			");
 			
 			$answer = Array (
 				'type' => "success",

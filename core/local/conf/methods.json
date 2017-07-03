@@ -53,6 +53,24 @@
 		"rights": "vucg",
 		"author": "Shemplo"
 	},
+	"api/groups.removeUser": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "remove_user",
+		"arguments": ["group_id", "user_id"],
+		"visible": "visible",
+		"rights": "vucg",
+		"author": "Shemplo"
+	},
+	"api/groups.joinGroup": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "join_group",
+		"arguments": ["hcode"],
+		"visible": "visible",
+		"rights": "v*c",
+		"author": "Shemplo"
+	},
 	"api/groups.getGroup": {
 		"src": "api/groups_manip.php",
 		"class": "GroupsManip",
