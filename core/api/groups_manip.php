@@ -135,7 +135,6 @@
 		}
 		
 		public static function get_group_data ($id) {
-			$_user = $GLOBALS ['_user'];
 			$db = $GLOBALS ['_db'];
 			if ($db == null) {
 				$answer = Array (

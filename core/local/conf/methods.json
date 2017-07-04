@@ -88,5 +88,32 @@
 		"visible": "visible",
 		"rights": "v*c*t",
 		"author": "Shemplo"
+	},
+	"api/topics.getTopic": {
+		"src": "api/topics_manip.php",
+		"class": "TopicsManip",
+		"call": "get_topic_data",
+		"arguments": ["topic_id"],
+		"visible": "visible",
+		"rights": "v*c*t",
+		"author": "Shemplo"
+	},
+	"api/topics.changeAuthor": {
+		"src": "api/topics_manip.php",
+		"class": "TopicsManip",
+		"call": "change_author",
+		"arguments": ["topic_id", "author"],
+		"visible": "visible",
+		"rights": "v*c*t",
+		"author": "Shemplo"
+	},
+	"api/topics.addTask": {
+		"src": "api/topics_manip.php",
+		"class": "TopicsManip",
+		"call": "add_task",
+		"arguments": ["topic_id", "name", "rating", "?index"],
+		"visible": "visible",
+		"rights": "v*c*t",
+		"author": "Shemplo"
 	}
 }
