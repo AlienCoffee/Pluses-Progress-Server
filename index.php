@@ -1,5 +1,7 @@
 <?php
 	
+	// Prototype inited
+	
 	// Loading configuration (all constants that can be useful)
 	require_once $_SERVER ['DOCUMENT_ROOT']."/core/local/conf/consts.php";
 	require_once __engine__."/php/users_manip.php";
