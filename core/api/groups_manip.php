@@ -325,6 +325,9 @@
 				return;
 			}
 			
+			$group_id= Utils::clear_spaces ($group_id);
+			$user_id= Utils::clear_spaces ($user_id);
+			
 			$db_answer = $db->query ("
 				SELECT `table_list`
 				FROM `groups`
@@ -359,6 +362,168 @@
 			);
 			
 			echo (json_encode ($answer));
+		}
+		
+		public static function add_topic ($group_id, $topic_id) {
+			$db = $GLOBALS ['_db'];
+			if ($db == null) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "database internal error"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$group_id= Utils::clear_spaces ($group_id);
+			$topic_id= Utils::clear_spaces ($topic_id);
+			
+			$db_answer = $db->query ("
+				SELECT *
+				FROM `groups`
+				WHERE `id` = '$group_id'
+				LIMIT 1
+			");
+			
+			if ($db_answer->num_rows != 1) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "group doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$group = $db_answer->fetch_assoc ();
+			
+			$db_answer = $db->query ("
+				SELECT *
+				FROM `topics`
+				WHERE `id` = '$topic_id'
+				LIMIT 1
+			");
+			
+			if ($db_answer->num_rows != 1) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "topic doesn't exist"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$topic = $db_answer->fetch_assoc ();
+			$table_results_name = "group_".$group ['id']."_topic_".$topic ['id']."_results";
+			
+			$db_answer = $db->query ("
+				SELECT COUNT(*)
+				FROM `$group[table_topics]`
+				WHERE `$group[table_topics]`.`topic_id` = '$topic_id'
+				LIMIT 1
+			")->fetch_assoc () 
+			or die ($db->error);
+			
+			if ($db_answer ['COUNT(*)'] != 0) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "topic already added"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			$db_answer = $db->query ("
+				INSERT
+				INTO `$group[table_topics]` (`topic_id`, `table_results`, `start_time`, `end_time`)
+				VALUES('$topic_id', '$table_results_name', UTC_TIMESTAMP(), UTC_TIMESTAMP())
+			");
+			
+			// Creating table
+			$db_answer = $db->query ("
+				CREATE 
+				TABLE `$table_results_name`
+				(
+					`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					`user_id` int(11) NOT NULL,
+					`mask` text NOT NULL,
+					FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+				) COMMENT = ''
+				COLLATE 'utf8_unicode_ci'
+			");
+			
+			if (!db_answer) {
+				$answer = Array (
+					'type' => "error",
+					'code' => "",
+					'message' => "internal error (try to remove topic and add again)"
+				);
+				
+				echo (json_encode ($answer));
+				return;
+			}
+			
+			// Putting results mask into generated table
+			$table_content_name = $topic ['table_content'];
+			
+			$db_answer = $db->query ("
+				SELECT *
+				FROM `$table_content_name`
+				ORDER BY `index` ASC
+			");
+			
+			$tasks_array = Array ();
+			for ($i = 0; $i < $db_answer->num_rows; $i ++) {
+				$tasks_array [] = $db_answer->fetch_assoc ();
+			}
+			$tasks_mask = GroupsManip::make_tasks_mask ($tasks_array);
+			
+			$table_list_name = $group ['table_list'];
+			$db_answer = $db->query ("
+				SELECT DISTINCT(`user_id`)
+				FROM `$table_list_name`
+				WHERE `join_time` = `leave_time`
+			");
+			
+			$list_array = Array ();
+			for ($i = 0; $i < $db_answer->num_rows; $i ++) {
+				$list_array [] = $db_answer->fetch_assoc ();
+			}
+			
+			foreach ($list_array as $key => $value) {
+				$db_answer = $db->query ("
+					INSERT
+					INTO `$table_results_name` (`user_id`, `mask`)
+					VALUES('$value[user_id]', '$tasks_mask')
+				");
+			}
+			
+			// Finishing creation
+			$answer = Array (
+				'type' => "success",
+				'code' => "200",
+				'message' => "successfully created"
+			);
+			
+			echo (json_encode ($answer));
+		}
+		
+		private static function make_tasks_mask ($tasks) {
+			$string = "";
+			
+			if (!is_array ($tasks)) { return $string; }
+			for ($i = 0; $i < count ($tasks); $i ++) {
+				$string .= "*";
+			}
+			
+			return $string;
 		}
 		
 	}

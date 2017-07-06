@@ -80,6 +80,15 @@
 		"rights": "v*cg",
 		"author": "Shemplo"
 	},
+	"api/groups.addTopic": {
+		"src": "api/groups_manip.php",
+		"class": "GroupsManip",
+		"call": "add_topic",
+		"arguments": ["group_id", "topic_id"],
+		"visible": "visible",
+		"rights": "v*cgt",
+		"author": "Shemplo"
+	},
 	"api/topics.newTopic": {
 		"src": "api/topics_manip.php",
 		"class": "TopicsManip",
