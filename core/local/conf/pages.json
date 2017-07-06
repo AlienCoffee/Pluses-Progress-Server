@@ -1,9 +1,0 @@
-{
-	"home": {
-		"src": "index.php",
-		"name": "Home page",
-		"visible": "visible",
-		"rights": "v",
-		"author": "Shemplo"
-	}
-}
