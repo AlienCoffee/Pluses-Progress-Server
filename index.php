@@ -19,6 +19,17 @@
     require_once $_errors_file;
 
     // Loading necessary files for work
+    $_utils_file = __php__."/utils.php";
+    if (!file_exists ($_utils_file)) {
+        Error::push ($F_NOT_FOUND_E->cmt ($_utils_file));
+    }
+    require_once $_utils_file;
     
+    $_db_file = __php__."/db.php";
+    if (!file_exists ($_db_file)) {
+        Error::push ($F_NOT_FOUND_E->cmt ($_db_file));
+    }
+    require_once $_db_file;
+    DB::connect ();
 
 ?>
