@@ -55,10 +55,19 @@
     $DB_PROPS_NOT_PARSED_E = new Error (1001, "Failed to parse properties");
     $DB_PROFL_NOT_FOUND_E  = new Error (1002, "DB profile not found");
     $DB_CONNECT_E          = new Error (1003, "Connection failed");
+    $DB_NO_CONNEC_E        = new Error (1004, "Not connected to database");
 
     // File problems - code format 2***
     $F_NOT_FOUND_E = new Error (2000, "File not found");
     $F_UNKNOWN_E   = new Error (2001, "Unknow file extension");
     $F_WRONG_E     = new Error (2002, "Wrong file extension");
+
+    // Request problems - code format 3***
+    $RQ_WRONG_METHOD_E = new Error (3000, "Wrong request method");
+    $RQ_NO_TOKEN_E     = new Error (3001, "Token was not found in arguments");
+
+    // Data formats problems - code format 4***
+    $DF_WRONG_REGEXP_E = new Error (4000, "Wrong regular expression");
+    $DF_NOT_HEX_E      = new Error (4001, "String hasn't HEX format");
 
 ?>

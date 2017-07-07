@@ -33,4 +33,21 @@
         return $data;
     }
 
+    function check_input_data ($data, $regexp, $error) {
+        if ($data == null && $regexp != "") {
+            Error::push ($error);
+        }
+
+        $result = @preg_match ($regexp, $data);
+        if ($result === 1) {
+            return true;
+        } else if ($result === 0) {
+            if ($error != null) { Error::push ($error); }
+            return false;
+        } else {
+            global $DF_WRONG_REGEXP_E;
+            Error::push ($DF_WRONG_REGEXP_E);
+        }
+    }
+
 ?>
