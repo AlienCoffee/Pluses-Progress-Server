@@ -6,6 +6,7 @@
     define (__server__, __src__."/server");
     define (__conf__, __server__."/conf");
     define (__php__, __server__."/php");
+    define (__frames__, __server__."/frames");
 
     // Server properties
     define (__domain__, $_SERVER ['SERVER_NAME']);

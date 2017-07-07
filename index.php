@@ -34,7 +34,7 @@
         Error::push ($F_NOT_FOUND_E->cmt ($_db_file));
     }
     require_once $_db_file;
-    DB::connect ();
+    $_db = DB::connect ();
 
     //
     // Getting request content //
@@ -89,7 +89,7 @@
     } else if ($_request_method == "POST") {
         if (isset ($_POST ['token'])) {
             $_token = strtolower (trim ($_POST ['token']));
-            
+
             // Merging body arguments to query arguments
             $_request_arguments = array_merge ($_request_arguments,
                                                 $_POST);

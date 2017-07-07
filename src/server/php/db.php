@@ -25,6 +25,8 @@
             if (DB::$db->connect_errno) {
                 Error::push ($DB_CONNECT_E->cmt (DB::$db->connect_error)); 
             }
+
+            return DB::$db;
         }
 
         public static function close () {
