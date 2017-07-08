@@ -1,0 +1,177 @@
+{
+    "home": {
+        "#file": {
+            "src": "home.php",
+            "rights": "",
+            "type": "page",
+            "enabled": true
+        }
+    },
+    "api": {
+        "#file": {
+            "src": "api.php",
+            "rights": "",
+            "type": "page",
+            "enabled": true
+        },
+
+        "users": {
+            "#file": {
+                "src": "users_manip.php",
+                "rights": "",
+                "type": "class",
+                "class": "UsersManip",
+                "enabled": true
+            },
+
+            "createUser": {
+                "function": "create_user",
+                "arguments": ["phone", "hpass", "hcode"],
+                "rights": ""
+            },
+            "removeUser": {
+                "function": "remove_user",
+                "arguments": ["user_id"],
+                "rights": ""
+            },
+            "getUserData": {
+                "function": "get_user_data",
+                "arguments": ["user_id"],
+                "rights": ""
+            },
+            "changeUserRights": {
+                "function": "change_user_rights",
+                "arguments": ["rights"],
+                "rights": ""
+            },
+            "changeUserData": {
+                "function": "change_user_data",
+                "arguments": ["name", "last_name", "second_name", "birthdaty"],
+                "rights": ""
+            },
+            "authUser": {
+                "function": "auth_user",
+                "arguments": ["phone", "hpass"],
+                "rights": ""
+            }
+        },
+        "groups": {
+            "#config": {
+                "file": "groups_manip.php",
+                "class": "GroupsManip",
+                "type": "class",
+                "enabled": true
+            },
+
+            "createGroup": {
+                "function": "create_group",
+                "arguments": ["name", "teacher_id"],
+                "rights": ""
+            },
+            "removeGroup": {
+                "function": "remove_group",
+                "arguments": ["group_id"],
+                "rights": ""
+            },
+            "getGroupData": {
+                "function": "get_group_data",
+                "arguments": ["group_id"],
+                "rights": ""
+            },
+            "changeGroupName": {
+                "function": "change_group_name",
+                "arguments": ["group_id", "name"],
+                "rights": ""
+            },
+            "changeGroupTeacher": {
+                "function": "change_group_teacher",
+                "arguments": ["group_id", "teacher_id"],
+                "rights": ""
+            },
+            "addUser": {
+                "function": "add_user",
+                "arguments": ["group_id", "user_id"],
+                "rights": ""
+            },
+            "joinUser": {
+                "function": "join_user",
+                "arguments": ["hcode"],
+                "rights": ""
+            },
+            "removeUser": {
+                "function": "remove_user",
+                "arguments": ["group_id", "user_id"],
+                "rights": ""
+            },
+            "shiftUser": {
+                "function": "shift_user",
+                "arguments": ["from_id", "to_id", "user_id"],
+                "rights": ""
+            },
+            "addTopic": {
+                "function": "add_topic",
+                "arguments": ["group_id", "topic_id"],
+                "rights": ""
+            },
+            "removeTopic": {
+                "function": "remove_topic",
+                "arguments": ["group_id", "topic_id"],
+                "rights": ""
+            }
+        },
+        "topics": {
+            "#config": {
+                "file": "topics_manip.php",
+                "class": "TopicsManip",
+                "type": "class",
+                "enabled": true
+            },
+
+            "createTopic": {
+                "function": "create_topic",
+                "arguments": ["name", "author_id"],
+                "rights": ""
+            },
+            "removeTopic": {
+                "function": "remove_topic",
+                "arguments": ["topic_id"],
+                "rights": ""
+            },
+            "getTopicData": {
+                "function": "get_topic_data",
+                "arguments": ["topic_id"],
+                "rights": ""
+            },
+            "changeTopicName": {
+                "function": "change_topic_name",
+                "arguments": ["topic_id", "name"],
+                "rights": ""
+            },
+            "changeAuthor": {
+                "function": "change_author",
+                "arguments": ["topic_id", "author_id"],
+                "rights": ""
+            },
+            "addTask": {
+                "function": "add_task",
+                "arguments": ["topic_id", "name", "in_rating", "?index"],
+                "rights": ""
+            },
+            "removeTask": {
+                "function": "remove_task",
+                "arguments": ["topic_id", "task_id"],
+                "rights": ""
+            },
+            "changeTaskIndex": {
+                "function": "change_task_index",
+                "arguments": ["topic_id", "task_id", "index"],
+                "rights": ""
+            },
+            "changeTaskRating": {
+                "function": "change_task_rating",
+                "arguments": ["topic_id", "task_id", "in_rating"],
+                "rights": ""
+            }
+        }
+    }
+}

@@ -18,6 +18,7 @@
 
     // Regular expressions
     define (__regexp_hex__, "/^[a-f0-9]+$/i"); // At least one digit or letter must be
+    define (__regexp_path__, "/^(\w+\.)*\w+$/i"); // Example `api.users.show` or `home`
 
     // Abbreviations
     define (br, "<br />");

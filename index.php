@@ -96,7 +96,14 @@
         } else { Error::push ($RQ_NO_TOKEN_E); }
     }
     check_input_data ($_token, __regexp_hex__, $DF_NOT_HEX_E);
+    // Identifying user by given token
+    $_user = identify_user ($_token);
 
+    //
+    // Loading methods configuration
+    //
 
+    $_sources = load_config_file ("sources.json");
+    load_path ($_request_parsed ['path']);
 
 ?>
