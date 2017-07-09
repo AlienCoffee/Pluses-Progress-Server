@@ -9,6 +9,18 @@
     <body>
     
         <h1>Pluses Progress API conventions</h1>
+
+        <?php
+        
+            function show ($array, $prefix) {
+                foreach ($array as $key => $value) {
+                    
+                }
+            }
+
+            show ($_sources, "");
+        
+        ?>
     
     </body>
 

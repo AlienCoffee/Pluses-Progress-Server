@@ -125,11 +125,28 @@
     }
 
     function check_for_arguments ($arguments, $need_arguments) {
-        return -1;
+        global $DF_NOT_ARRAY_E;
+        
+        if (!is_array ($arguments) || !is_array ($need_arguments)) {
+            Error::push ($DF_NOT_ARRAY_E->cmt ("arguments", __FUNCTION__));
+        }
+
+        $missed = -1;
+        for ($i = 0; $i < count ($need_arguments); $i ++) {
+            $argument = $need_arguments [$i];
+
+            if (!array_key_exists ($argument, $arguments)) {
+                $missed = $i;
+                break;
+            }
+        }
+
+        return $missed;
     }
 
     function load_file ($file_object) {
-        global $_user;
+        global $_user,
+                $_sources;
         global $F_NOT_FOUND_E,
                 $RQ_NO_RIGHTS_E,
                 $DF_UNKNOWN_TYPE_E,
@@ -189,6 +206,7 @@
                 $RQ_NO_RIGHTS_E,
                 $RQ_NOT_FOUND_E,
                 $RQ_NOT_ENABLED_E,
+                $RQ_NOT_IMPL_E,
                 $DF_NOT_PATH_E,
                 $DF_NO_KEY_E;
 
@@ -277,6 +295,12 @@
                 Error::push ($RQ_NO_ARGUMENT_E->cmt ($object ['arguments'][$missed_argument]));
             }
 
+            $function_arguments = Array ();
+            for ($i = 0; $i < count ($object ['arguments']); $i ++) {
+                // To send arguments to function in correct order (how in manifest)
+                $function_arguments [] = $_request_arguments [$object ['arguments'][$i]];
+            }
+
             if (!$context ['enabled']) { // Is it accessable now or not (may be in work)
                 Error::push ($RQ_NOT_ENABLED_E);
             }
@@ -286,9 +310,14 @@
                 $class_name  = $context ['class'];
 
                 // Calling for the requested funtion in custom class
-                @call_user_func_array ("$class_name::$method_name", $_request_arguments);
+                if (@call_user_func_array ("$class_name::$method_name", $function_arguments) === false) {
+                    Error::push ($RQ_NOT_IMPL_E->cmt ("$class_name::$method_name"));
+                }
             } else if ($context ['type'] == "library") {
-                @call_user_func_array ("$method_name", $_request_arguments);
+                // Calling for the requested funtion in global namespace
+                if (@call_user_func_array ("$method_name", $function_arguments) === false) {
+                    Error::push ($RQ_NOT_IMPL_E->cmt ("$class_name::$method_name"));
+                }
             }
         }
     }

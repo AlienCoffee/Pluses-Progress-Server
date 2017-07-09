@@ -72,6 +72,7 @@
     $RQ_NO_RIGHTS_E    = new Error (3403, "Not enough rights for user");
     $RQ_NOT_FOUND_E    = new Error (3404, "Request destination not found");
     $RQ_NOT_ENABLED_E  = new Error (3423, "Request destination is not enabled now");
+    $RQ_NOT_IMPL_E     = new Error (3501, "Not implemented");
 
     // Data formats problems - code format 4***
     $DF_WRONG_REGEXP_E = new Error (4000, "Wrong regular expression");

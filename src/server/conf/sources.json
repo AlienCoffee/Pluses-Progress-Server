@@ -56,7 +56,7 @@
             }
         },
         "groups": {
-            "#config": {
+            "#file": {
                 "file": "groups_manip.php",
                 "class": "GroupsManip",
                 "type": "class",
@@ -120,7 +120,7 @@
             }
         },
         "topics": {
-            "#config": {
+            "#file": {
                 "file": "topics_manip.php",
                 "class": "TopicsManip",
                 "type": "class",
