@@ -56,6 +56,7 @@
     $DB_PROFL_NOT_FOUND_E  = new Error (1002, "DB profile not found");
     $DB_CONNECT_E          = new Error (1003, "Connection failed");
     $DB_NO_CONNEC_E        = new Error (1004, "Not connected to database");
+    $DB_FAILED_E           = new Error (1005, "Request to DB failed");
 
     // File problems - code format 2***
     $F_NOT_FOUND_E  = new Error (2000, "File not found");

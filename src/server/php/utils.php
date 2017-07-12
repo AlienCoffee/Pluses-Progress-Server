@@ -56,19 +56,45 @@
     }
 
     function clear_from_spaces ($string) {
-        return $string;
+        if (!is_string ($string)) { return ""; }
+
+        $result = "";
+        for ($i = 0; $i < strlen ($string); $i ++) {
+            $char = $string [$i];
+            if (!($char == ' ' || $char == '\n' || $char == '\r')) {
+                $result .= $char;
+            }
+        }
+        
+        return $result;
     }
 
     function identify_user ($token) {
+        global $DB_FAILED_E;
         $db = DB::connect ();
         
         // Guest user pre-set
         $user = Array (
-            'login'  => "guest",
             'rights' => ""
         );
 
         $token = clear_from_spaces ($token);
+        $db_answer = $db->query ("
+            SELECT `user_id`,
+                    `phone`,
+                    `rights`,
+                    `device_id`
+            FROM `sessions`
+            LEFT JOIN `users`
+                ON `sessions`.`user_id` = `users`.`id`
+            WHERE `token` = '$token'
+            LIMIT 1
+        ") or die ($DB_FAILED_E->cmt ($db->error, __FUNCTION__)->toJSON ());
+
+        if ($db_answer->num_rows == 1) {
+            // User was found -> return his data
+            $user = $db_answer->fetch_assoc ();
+        }
 
         return $user;
     }

@@ -9,7 +9,9 @@
         'post' => $post,
         'get' => $get,
         'method' => $_SERVER ['REQUEST_METHOD'],
-        'uri' => $_SERVER ['REQUEST_URI']
+        'uri' => $_SERVER ['REQUEST_URI'],
+        'port' => $_SERVER ['SERVER_PORT'],
+        'time' => time ()
     );
 
     echo (json_encode ($answer));

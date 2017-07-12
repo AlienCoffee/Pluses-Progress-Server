@@ -53,6 +53,11 @@
                 "function": "auth_user",
                 "arguments": ["phone", "hpass"],
                 "rights": ""
+            },
+            "getUserGroups": {
+                "function": "get_user_groups",
+                "arguments": ["user_id"],
+                "rights": ""
             }
         },
         "groups": {
