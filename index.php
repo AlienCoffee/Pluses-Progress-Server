@@ -130,14 +130,23 @@
 
     $path = $_request_parsed ['path'];
     $path = trim ($path);
-    if ($path [0] == "/") {
-        // Deleting the first slash symbol
-        // to unify all requests' queries 
-        $path = substr ($path, 1);
+
+    $index = 0;
+    while (!ctype_alpha ($path [$index]) && $index < strlen ($path)) {
+        $index ++;
+    }
+    if ($index == strlen ($path)) {
+        $path = "";
+    } else {
+        $path = substr ($path, $index);
+    }
+
+    if (strpos ($path, $_SERVER ['SERVER_NAME']."/") === 0) {
+        $path = substr ($path, strlen ($_SERVER ['SERVER_NAME']."/"));
     }
 
     check_input_data ($path, __regexp_path__, $E_EXP_NOT_IN_PATH_FORMAT);
-    $split_path = split ("\.", $path);
+    $split_path = @split ("\.", $path);
 
     $index = 0;
     $_object = $_sources;
@@ -237,13 +246,16 @@
         $arg_name = $_object ['arguments'][$i];
         if ($arg_name [0] == "?") {
             $arg_name = substr ($arg_name, 1);
+            if (!array_key_exists ($arg_name, $_request_arguments)) {
+                continue;
+            }
         }
 
         $_function_arguments [] = $_request_arguments [$arg_name];
     }
 
-    $_funtion_rights = $_object ['rights'];
-    if (!check_for_rights ($_user, $_funtion_rights)) {
+    $_function_rights = $_object ['rights'];
+    if (!check_for_rights ($_user, $_function_rights)) {
         Answer::push ($E_PERM_DENIED->cmt ("", __FILE__, 
                                                 __LINE__));
     }

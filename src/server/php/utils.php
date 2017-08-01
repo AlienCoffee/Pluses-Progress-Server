@@ -53,14 +53,14 @@
         global $E_REG_EXP_WRONG_FORMAT,
                 $E_EXP_NOT_A_STRING;
 
-        if (!is_string ($data)) {
-            Answer::push ($E_EXP_NOT_A_STRING->cmt ("", __FILE__."::".__FUNCTION__, 
-                                                        __LINE__));
-        }
-
         if ($data == null && $regexp != "" && $error != null) {
             Answer::push ($error->cmt ("", __FILE__."::".__FUNCTION__, 
                                             __LINE__));
+        }
+
+        if (!is_string ($data) && !is_numeric ($data)) {
+            Answer::push ($E_EXP_NOT_A_STRING->cmt ("data", __FILE__."::".__FUNCTION__, 
+                                                        __LINE__));
         }
 
         $result = @preg_match ($regexp, $data);

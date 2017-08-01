@@ -2,12 +2,11 @@
 
     final class UsersManip {
 
-        public static function auth ($phone, $hpass, $device_id = 0) {
+        public static function auth ($phone, $hpass, $device_code = "def") {
             global $E_USER_NOT_EXISTS,
                     $E_USER_WRONG_PASSWORD,
+                    $E_DEVICE_NOT_EXISTS,
                     $S_REQ_DONE;
-
-                    echo ($device_id.br);
 
             $hpass = md5 (__key_salt1__.$hpass.__key_salt1__);
             $phone = UsersManip::prepare_number ($phone);
@@ -37,6 +36,24 @@
             }
 
             //////////////////////////////////
+
+            $db_answer = DB::request ("
+                SELECT `id`
+                FROM `devices`
+                WHERE `code` = '$device_code'
+                LIMIT 1
+            ");
+
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            } else if ($db_answer->num_rows != 1) {
+                return $E_DEVICE_NOT_EXISTS->cmt ($device_code, 
+                                                    __FILE__."::".__FUNCTION__, 
+                                                    __LINE__);
+            }
+
+            $device_id = $db_answer->fetch_assoc () ['id'];
 
             $db_answer = DB::request ("
                 SELECT `token`
@@ -177,6 +194,64 @@
             }
 
             return $S_REQ_DONE;
+        }
+
+        public static function get_user_data ($user_id) {
+            global $E_USER_NOT_EXISTS,
+                    $S_REQ_DONE;
+
+            $db_answer = DB::request ("
+                SELECT `phone`,
+                        `rights`,
+                        `name`,
+                        `last_name`,
+                        `second_name`,
+                        `birthday`
+                FROM `users`
+                LEFT JOIN `users-data`
+                    ON `users`.`data_id` = `users-data`.`id`
+                WHERE `users`.`id` = '$user_id'
+                LIMIT 1
+            ");
+
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            }
+
+            if ($db_answer->num_rows != 1) {
+                return $E_USER_NOT_EXISTS->cmt ($user_id,
+                                                __FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            }
+
+            return $S_REQ_DONE->cmt ($db_answer->fetch_assoc (), 
+                                        __FILE__."::".__FUNCTION__, 
+                                        __LINE__);
+        }
+
+        public static function does_user_exist ($user_id) {
+            global $S_REQ_DONE;
+
+            $db_answer = DB::one_exists ("
+                SELECT COUNT(*)
+                FROM `users`
+                WHERE `id` = '$user_id'
+                LIMIT 1
+            ");
+
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            }
+
+            $answer = Array (
+                'exists' => $db_answer
+            );
+
+            return $S_REQ_DONE->cmt ($answer,
+                                        __FILE__."::".__FUNCTION__, 
+                                        __LINE__);
         }
 
         private static function prepare_number ($phone) {

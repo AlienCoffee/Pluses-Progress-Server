@@ -122,6 +122,7 @@
     $E_USER_WRONG_PASSWORD = new Answer (5001, "Error", "Wrong password or phone");
     $E_USER_EXISTS         = new Answer (5002, "Error", "User already exists");
     $E_WRONG_INVITE_CODE   = new Answer (5003, "Error", "Wrong invite code");
+    $E_DEVICE_NOT_EXISTS   = new Answer (5004, "Error", "Device doesn't exists");
 
     // Success //
 

@@ -7,6 +7,8 @@
         }
 
         public static function info () {
+            global $_user;
+
             $post = $_POST;
             $get  = $_GET;
 
@@ -18,7 +20,8 @@
                 'method' => $_SERVER ['REQUEST_METHOD'],
                 'uri' => $_SERVER ['REQUEST_URI'],
                 'port' => $_SERVER ['SERVER_PORT'],
-                'time' => time ()
+                'time' => time (),
+                'user' => $_user
             );
 
             return (new Answer (0, "Answer", __FUNCTION__))

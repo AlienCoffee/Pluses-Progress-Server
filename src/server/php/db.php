@@ -4,7 +4,7 @@
 
         private static $db = null;
 
-        public function connect () {
+        public static function connect () {
             global $E_DB_PROFILE_NOT_FOUND,
                     $E_DB_CONNECTION_FAILED;
 
@@ -39,7 +39,7 @@
             return DB::$db;
         }
 
-        public function request ($query) {
+        public static function request ($query) {
             global $E_DB_REQUEST_FAILED;
             $db = DB::connect ();
 
@@ -53,7 +53,7 @@
             return $db_answer;
         }
 
-        public function one_exists ($query) {
+        public static function one_exists ($query) {
             global $E_DB_REQUEST_FAILED;
             $db = DB::connect ();
 
@@ -67,7 +67,7 @@
             return @$db_answer->fetch_assoc () ['COUNT(*)'] == 1;
         }
 
-        public function close () {
+        public static function close () {
             // Already closeds
             if (DB::$db === null) {
                 return;
