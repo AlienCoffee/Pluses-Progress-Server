@@ -1,15 +1,13 @@
 <!DOCTYPE HTML>
-<html lang='en'>
+<html>
 
     <head>
-        <meta charset='UTF-8' />
-        <title>Pluses Progress API</title>
+        <meta charset="UTF-8" />
+        <title>API domunetation</title>
     </head>
 
     <body>
-    
-        <h1>Pluses Progress API conventions</h1>
-    
+        
     </body>
 
 </html>
