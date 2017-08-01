@@ -1,6 +1,6 @@
 <?php
 
-	// Index page
+    // Index page
     // All requests are redirected here
 
     //
@@ -8,33 +8,48 @@
     //
     $_consts_file = $_SERVER ['DOCUMENT_ROOT']."/src/server/conf/consts.php";
     if (!file_exists ($_consts_file)) {
-        echo ("[ERROR] Failed to load configs file (consts.php) due to: not found");
+        $error = Array (
+            'code'    => 2000,
+            'type'    => "Error",
+            'name'    => "File not found",
+            'message' => $_consts_file,
+            'trace'   => Array ()
+        );
+        echo (json_encode ($error));
         exit (0);
     }
     require_once $_consts_file;
 
-    $_errors_file = __conf__."/errors.php";
-    if (!file_exists ($_errors_file)) {
-        echo ("[ERROR] Failed to load configs file (errors.php) due to: not found");
+    $_answer_file = __conf__."/answer.php";
+    if (!file_exists ($_answer_file)) {
+        $error = Array (
+            'code'    => 2000,
+            'type'    => "Error",
+            'name'    => "File not found",
+            'message' => $_answer_file,
+            'trace'   => Array ()
+        );
+        echo (json_encode ($error));
         exit (0);
     }
-    require_once $_errors_file;
+    require_once $_answer_file;
 
     //
     // Loading necessary files for work //
     //
+
     $_utils_file = __php__."/utils.php";
     if (!file_exists ($_utils_file)) {
-        Error::push ($F_NOT_FOUND_E->cmt ($_utils_file));
+        Answer::push ($E_FILE_NOT_FOUND->cmt ($_utils_file, __FILE__, __LINE__));
     }
     require_once $_utils_file;
     
     $_db_file = __php__."/db.php";
     if (!file_exists ($_db_file)) {
-        Error::push ($F_NOT_FOUND_E->cmt ($_db_file));
+        Answer::push ($E_FILE_NOT_FOUND->cmt ($_db_file, __FILE__, __LINE__));
     }
     require_once $_db_file;
-    $_db = DB::connect ();
+    DB::connect ();
 
     //
     // Getting request content //
@@ -93,17 +108,147 @@
             // Merging body arguments to query arguments
             $_request_arguments = array_merge ($_request_arguments,
                                                 $_POST);
-        } else { Error::push ($RQ_NO_TOKEN_E); }
+        } else {
+            Answer::push ($E_REQ_HAS_NO_TOKEN->cmt ("", __FILE__, __LINE__));
+        }
     }
-    check_input_data ($_token, __regexp_hex__, $DF_NOT_HEX_E);
+    check_input_data ($_token, __regexp_hex__, $E_EXP_NOT_IN_HEX_FORMAT);
     // Identifying user by given token
     $_user = identify_user ($_token);
-
-    //
-    // Loading methods configuration
-    //
+    if ($_user instanceof Answer && $user ['type'] == "Error") {
+        Answer::push ($_user->addTrace (__FILE__, __LINE__));
+    }
 
     $_sources = load_config_file ("sources.json");
-    load_path ($_request_parsed ['path']);
+    if ($_sources instanceof Answer) {
+        Answer::push ($_sources->addTrace (__FILE__, __LINE__));
+    }
+
+    //
+    // Loading files and calling for methods
+    //
+
+    $path = $_request_parsed ['path'];
+    $path = trim ($path);
+    if ($path [0] == "/") {
+        // Deleting the first slash symbol
+        // to unify all requests' queries 
+        $path = substr ($path, 1);
+    }
+
+    check_input_data ($path, __regexp_path__, $E_EXP_NOT_IN_PATH_FORMAT);
+    $split_path = split ("\.", $path);
+
+    $index = 0;
+    $_object = $_sources;
+    $_is_page = false;
+    $_tmp_class = "";
+
+    while ($index < count ($split_path)) {
+        $current = $split_path [$index ++];
+        if (!array_key_exists ($current, $_object)) {
+            Answer::push ($E_DEST_NOT_FOUND->cmt ($current, 
+                                                    __FILE__, 
+                                                    __LINE__));
+        }
+
+        $_object = $_object [$current]; // One step down
+        if (array_key_exists ("#file", $_object)) {
+            // This means that FILE should be included
+            $_context_file = $_object ['#file'];
+
+            if (!check_for_rights ($_user, $_context_file ['rights'])) {
+                Answer::push ($E_PERM_DENIED->cmt ("", __FILE__, 
+                                                    __LINE__));
+            }
+
+            switch ($_context_file ['type']) {
+                case ("page"):
+                    if ($index < count ($split_path)) {
+                        // If there is something in path
+                        // then skip loading of page
+                        continue;
+                    }
+                    
+                    if (!file_exists (__frames__."/".$_context_file ['src'])) {
+                        Answer::push ($E_FILE_NOT_FOUND->cmt ($_context_file ['src'],
+                                                                __FILE__,
+                                                                __LINE__));
+                    }
+
+                    require_once __frames__."/".$_context_file ['src'];
+                    // Mark to exit after a loop immediately
+                    $_is_page = true;
+                    break 2;
+                case ("lib"):
+                    if (!file_exists (__php__."/".$_context_file ['src'])) {
+                        Answer::push ($E_FILE_NOT_FOUND->cmt ($_context_file ['src'],
+                                                                __FILE__,
+                                                                __LINE__));
+                    }
+
+                    require_once __php__."/".$_context_file ['src'];
+                    break;
+                case ("class"):
+                    if (!file_exists (__php__."/".$_context_file ['src'])) {
+                        Answer::push ($E_FILE_NOT_FOUND->cmt ($_context_file ['src'],
+                                                                __FILE__,
+                                                                __LINE__));
+                    }
+                    require_once __php__."/".$_context_file ['src'];
+                    $_tmp_class = $_context_file ['class'];
+                    break;
+            }
+        }
+    }
+
+    // Now $_object - final stage (method or nothing)
+    if ($_is_page) {
+        @DB::close ();
+        exit (0);
+    }
+
+    if (!array_key_exists ("function", $_object) 
+            || !array_key_exists ("arguments", $_object)
+            || !array_key_exists ("rights", $_object)) {
+        Answer::push ($E_REQ_NOT_TERMINAL->cmt ($path, 
+                                                    __FILE__."::".__FUNCTION__, 
+                                                    __LINE__));
+    }
+
+    $_funtion_name = $_object ['function'];
+    if ($_tmp_class != null) {
+        // Be ready right now to call from class
+        $_funtion_name = $_tmp_class."::".$_funtion_name;
+    }
+
+    $_funtion_args = $_object ['arguments'];
+    $missed_argument = check_for_arguments ($_request_arguments, 
+                                                $_funtion_args);
+    if ($missed_argument != -1) {
+        Answer::push ($E_NOT_ENOUGH_ARGS->cmt ($_funtion_args [$missed_argument],
+                                                __FILE__."::".__FUNCTION__,
+                                                __LINE__));
+    }
+
+    $_function_arguments = Array ();
+    for ($i = 0; $i < count ($_object ['arguments']); $i ++) {
+        // To send arguments to function in correct order (how in manifest)
+        $arg_name = $_object ['arguments'][$i];
+        if ($arg_name [0] == "?") {
+            $arg_name = substr ($arg_name, 1);
+        }
+
+        $_function_arguments [] = $_request_arguments [$arg_name];
+    }
+
+    $_funtion_rights = $_object ['rights'];
+    if (!check_for_rights ($_user, $_funtion_rights)) {
+        Answer::push ($E_PERM_DENIED->cmt ("", __FILE__, 
+                                                __LINE__));
+    }
+
+    $_result = call_user_func_array ($_funtion_name, $_function_arguments);
+    if ($_result instanceof Answer) { Answer::push ($_result); }
 
 ?>
