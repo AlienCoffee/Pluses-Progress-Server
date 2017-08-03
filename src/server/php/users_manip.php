@@ -18,7 +18,6 @@
                 WHERE `phone` = '$phone'
                 LIMIT 1
             ");
-
             if ($db_answer instanceof Answer) {
                 return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
                                                 __LINE__);
@@ -201,7 +200,8 @@
                     $S_REQ_DONE;
 
             $db_answer = DB::request ("
-                SELECT `phone`,
+                SELECT `id`,
+                        `phone`,
                         `rights`,
                         `name`,
                         `last_name`,
@@ -250,6 +250,62 @@
             );
 
             return $S_REQ_DONE->cmt ($answer,
+                                        __FILE__."::".__FUNCTION__, 
+                                        __LINE__);
+        }
+
+        public static function get_user_groups ($user_id) {
+            global $E_USER_NOT_EXISTS,
+                    $S_REQ_DONE;
+
+            $user_exists = DB::one_exists ("
+                SELECT COUNT(*)
+                FROM `users`
+                WHERE `id` = '$user_id'
+                LIMIT 1
+            ");
+            if ($user_exists instanceof Answer) {
+                return $user_exists->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            } else if (!$user_exists) {
+                return $E_USER_NOT_EXISTS->cmt ($user_id,
+                                                    __FILE__."::".__FUNCTION__, 
+                                                    __LINE__);
+            }
+
+            $db_answer = DB::request ("
+                SELECT `id`,
+                        `list_table`
+                FROM `groups`
+            ");
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            }
+
+            $groups_list = Array ();
+            for ($i = 0; $i < $db_answer->num_rows; $i ++) {
+                $group_object = $db_answer->fetch_assoc ();
+                $list_table_name = $group_object ['list_table'];
+                $group_id = $group_object ['id'];
+
+                $joined = DB::one_exists ("
+                    SELECT COUNT(*)
+                    FROM `$list_table_name`
+                    WHERE `user_id` = '$user_id'
+                        AND `join_time` = `leave_time`
+                    LIMIT 1
+                ");
+                if ($joined instanceof Answer) {
+                    return $joined->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+                } else if ($joined) {
+                    // User joined this group
+                    array_push ($groups_list, $group_id);
+                }
+            }
+
+            return $S_REQ_DONE->cmt ($groups_list, 
                                         __FILE__."::".__FUNCTION__, 
                                         __LINE__);
         }

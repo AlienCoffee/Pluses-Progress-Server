@@ -40,6 +40,11 @@
                 "function": "does_user_exist",
                 "arguments": ["user_id"],
                 "rights": "v"
+            },
+            "getUserGroups": {
+                "function": "get_user_groups",
+                "arguments": ["user_id"],
+                "rights": "v"
             }
         },
         "groups": {
@@ -54,6 +59,75 @@
                 "function": "create_group",
                 "arguments": ["name", "head_teacher"],
                 "rights": "v*g"
+            },
+            "getGroupData": {
+                "function": "get_group_data",
+                "arguments": ["group_id"],
+                "rights": "v"
+            },
+            "joinGroup": {
+                "function": "join_group",
+                "arguments": ["invite_code"],
+                "rights": "v"
+            },
+            "leaveGroup": {
+                "function": "leave_group",
+                "arguments": ["group_id"],
+                "rights": "v"
+            },
+            "addUser": {
+                "function": "add_user",
+                "arguments": ["group_id", "user_id"],
+                "rights": "vug"
+            },
+            "removeUser": {
+                "function": "remove_user",
+                "arguments": ["group_id", "user_id"],
+                "rights": "vug"
+            },
+            "moveUser": {
+                "function": "move_user",
+                "argumetns": ["group_from", "group_to", "user_id"],
+                "rights": "vug"
+            },
+            "renameGroup": {
+                "function": "rename_group",
+                "arguments": ["group_id", "name"],
+                "rights": "v*g"
+            },
+            "addTopic": {
+                "function": "add_topic",
+                "arguments": ["group_id", "topic_id"],
+                "rights": "v*g"
+            }
+        },
+        "topics": {
+            "#file": {
+                "src": "topics_manip.php",
+                "type": "class",
+                "class": "TopicsManip",
+                "rights": "v"
+            },
+
+            "createTopic": {
+                "function": "create_topic",
+                "arguments": ["name"],
+                "rights": "v**t"
+            },
+            "getTopicData": {
+                "function": "get_topic_data",
+                "arguments": ["topic_id"],
+                "rights": "v"
+            },
+            "addTask": {
+                "function": "add_task",
+                "arguments": ["topic_id", "name", "?index", "?rating"],
+                "rights": "v**t"
+            },
+            "registerAttempt": {
+                "function": "register_attempt",
+                "arguments": ["user_id", "group_id", "topic_id", "problem", "result"],
+                "rights": "v**tm"
             }
         },
         "test": {

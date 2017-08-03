@@ -109,6 +109,8 @@
     $E_EXP_NOT_A_STRING        = new Answer (3003, "Error", "String was expected");
     $E_EXP_NOT_AN_ARRAY        = new Answer (3004, "Error", "Array was expected");
     $E_EXP_NOT_IN_PHONE_FORMAT = new Answer (3005, "Error", "Wrong phone format");
+    $E_EXP_NOT_POSITIVE        = new Answer (3006, "Error", "Number must be positive");
+    $E_EXP_NOT_BOOLEAN         = new Answer (3007, "Error", "Value msut be true or false");
 
     // REQUESTS ( 4*** ) //
     $E_REQ_HAS_NO_TOKEN = new Answer (4000, "Error", "No token found in POST request");
@@ -116,13 +118,26 @@
     $E_PERM_DENIED      = new Answer (4002, "Error", "Permission denied");
     $E_NOT_ENOUGH_ARGS  = new Answer (4003, "Error", "Argument missed");
     $E_REQ_NOT_TERMINAL = new Answer (4004, "Error", "Undefined request path");
+    $E_USER_NOT_LOGINED = new Answer (4005, "Error", "You are not logined");
+    $E_UNEXPECTED       = new Answer (4006, "Error", "Unexpected error");
 
     // SECTIONS ( 5*** ) //
-    $E_USER_NOT_EXISTS     = new Answer (5000, "Error", "User doesn't exists");
+    $E_USER_NOT_EXISTS     = new Answer (5000, "Error", "User doesn't exist");
     $E_USER_WRONG_PASSWORD = new Answer (5001, "Error", "Wrong password or phone");
     $E_USER_EXISTS         = new Answer (5002, "Error", "User already exists");
     $E_WRONG_INVITE_CODE   = new Answer (5003, "Error", "Wrong invite code");
     $E_DEVICE_NOT_EXISTS   = new Answer (5004, "Error", "Device doesn't exists");
+    $E_NO_RIGHTS_FOR_HEAD  = new Answer (5005, "Error", "User doesn't have enough rights to be a head teacher");
+    $E_GROUP_NOT_EXISTS    = new Answer (5006, "Error", "Group doesn't exist");
+    $E_USER_ALREADY_JOINED = new Answer (5007, "Error", "User has been already joined this group");
+    $E_USER_NOT_JOINED     = new Answer (5008, "Error", "User hasn't joined this group");
+    $E_TOPIC_NOT_EXISTS    = new Answer (5009, "Error", "Topic doesn't exist");
+    $E_TOPIC_ALREADY_ADDED = new Answer (5010, "Error", "Topic has been already added to this group");
+    $E_TASK_ALREADY_ADDED  = new Answer (5011, "Error", "Task has been already added to this topic");
+    $E_TASK_NOT_EXISTS     = new Answer (5012, "Error", "Task doesn't exist");
+    $E_CONTEST_TIME_LEFT   = new Answer (5013, "Error", "Topic's time has left");
+    $E_TOPIC_NOT_ADDED     = new Answer (5014, "Error", "Topic isn't added to this group");
+    $E_SOLUT_FROM_CHECKER  = new Answer (5015, "Error", "This user is teacher and attempt will be ignored");
 
     // Success //
 

@@ -12,12 +12,16 @@
     define (__domain__, $_SERVER ['SERVER_NAME']);
     define (__def_token__, "def");
     define (__def_dest__, "home");
+    define (__timezone__, +5);
 
     define (__key_salt1__, "some value");
+    //define (__key_salt2__, "some value");
+    //define (__key_salt3__, "some value");
 
     // Database
     define (__db_profile__, "local");
 
+  
     // Regular expressions
     define (__regexp_hex__, "/^[a-f0-9]+$/i"); // At least one digit or letter must be
     define (__regexp_path__, "/^(\w+\.)*\w+$/i"); // Example `api.users.show` or `home`

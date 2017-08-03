@@ -261,6 +261,6 @@
     }
 
     $_result = call_user_func_array ($_funtion_name, $_function_arguments);
-    if ($_result instanceof Answer) { Answer::push ($_result); }
+    if ($_result instanceof Answer) { Answer::push ($_result->addTrace (__FILE__, __LINE__)); }
 
 ?>

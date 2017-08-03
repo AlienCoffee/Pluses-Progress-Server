@@ -25,7 +25,7 @@
             );
 
             return (new Answer (0, "Answer", __FUNCTION__))
-                    ->cmt ($answer, __FUNCTION__, 
+                    ->cmt ($answer, __FILE__."::".__FUNCTION__, 
                             __LINE__);
         }
 

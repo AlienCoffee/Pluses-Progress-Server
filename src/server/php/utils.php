@@ -118,7 +118,7 @@
 
         $token = clear_from_spaces ($token);
         $db_answer = DB::request ("
-            SELECT `user_id`,
+            SELECT `users`.`id`,
                     `phone`,
                     `rights`,
                     `device_id`,
