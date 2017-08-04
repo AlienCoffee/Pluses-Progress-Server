@@ -98,7 +98,10 @@
             if ($db_answer->num_rows == 1) {
                 $token = $db_answer->fetch_assoc () ['token'];
 
-                $answer = Array ( 'token' => $token );
+                $answer = Array (
+                    'token' => $token,
+                    'id' => $user ['id']
+                );
                 return $S_REQ_DONE->cmt ($answer,
                                             __FILE__."::".__FUNCTION__, 
                                             __LINE__);
@@ -120,7 +123,10 @@
                                                 __LINE__);
             }
 
-            $answer = Array ( 'token' => $token );
+            $answer = Array (
+                'token' => $token,
+                'id' => $user ['id']
+            );
             return $S_REQ_DONE->cmt ($answer,
                                         __FILE__."::".__FUNCTION__, 
                                         __LINE__);
@@ -245,7 +251,7 @@
                     $S_REQ_DONE;
 
             $db_answer = DB::request ("
-                SELECT `id`,
+                SELECT `users`.`id`,
                         `phone`,
                         `rights`,
                         `name`,
