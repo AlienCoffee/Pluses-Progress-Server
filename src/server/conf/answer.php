@@ -138,6 +138,7 @@
     $E_CONTEST_TIME_LEFT   = new Answer (5013, "Error", "Topic's time has left");
     $E_TOPIC_NOT_ADDED     = new Answer (5014, "Error", "Topic isn't added to this group");
     $E_SOLUT_FROM_CHECKER  = new Answer (5015, "Error", "This user is teacher and attempt will be ignored");
+    $E_DEVICE_ALREADY_REG  = new Answer (5016, "Error", "Device has been already registered");
 
     // Success //
 

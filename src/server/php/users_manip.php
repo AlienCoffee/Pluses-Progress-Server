@@ -3,7 +3,8 @@
     final class UsersManip {
 
         public static function auth ($phone, $hpass, $device_code = "def") {
-            global $E_USER_NOT_EXISTS,
+            global $E_UNEXPECTED,
+                    $E_USER_NOT_EXISTS,
                     $E_USER_WRONG_PASSWORD,
                     $E_DEVICE_NOT_EXISTS,
                     $S_REQ_DONE;
@@ -47,9 +48,36 @@
                 return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
                                                 __LINE__);
             } else if ($db_answer->num_rows != 1) {
-                return $E_DEVICE_NOT_EXISTS->cmt ($device_code, 
+                if ($device_code == "def") {
+                    /* UNCHECKED */
+                    require_once __php__."/other.php";
+                    $result = register_device ("def", "default device", "unknown");
+                    if ($result instanceof Answer && $result ['type'] == "Error") {
+                        return $result->addTrace (__FILE__."::".__FUNCTION__, 
+                                                    __LINE__);
+                    }
+
+                    if (!($result instanceof Answer)) {
+                        return $E_UNEXPECTED->cmt ("Unexpected format of answer",
                                                     __FILE__."::".__FUNCTION__, 
                                                     __LINE__);
+                    }
+
+                    $db_answer = DB::request ("
+                        SELECT `id`
+                        FROM `devices`
+                        WHERE `code` = '$device_code'
+                        LIMIT 1
+                    ");
+                    if ($db_answer instanceof Answer) {
+                        return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                        __LINE__);
+                    }
+                } else {
+                    return $E_DEVICE_NOT_EXISTS->cmt ($device_code, 
+                                                        __FILE__."::".__FUNCTION__, 
+                                                        __LINE__);
+                }
             }
 
             $device_id = $db_answer->fetch_assoc () ['id'];

@@ -15,8 +15,8 @@
     define (__timezone__, +5);
 
     define (__key_salt1__, "some value");
-    //define (__key_salt2__, "some value");
-    //define (__key_salt3__, "some value");
+    define (__key_salt2__, "some value");
+    define (__key_salt3__, "some value");
 
     // Database
     define (__db_profile__, "local");

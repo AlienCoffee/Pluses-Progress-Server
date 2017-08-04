@@ -424,6 +424,51 @@
                                         __LINE__);
         }
 
+        public static function get_topic_content ($topic_id) {
+            global $E_TOPIC_NOT_EXISTS,
+                    $S_REQ_DONE;
+
+            $db_answer = DB::request ("
+                SELECT `content_table`
+                FROM `topics`
+                WHERE `id` = '$topic_id'
+                LIMIT 1
+            ");
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            } else if ($db_answer->num_rows != 1) {
+                return $E_TOPIC_NOT_EXISTS->cmt ($topic_id,
+                                                    __FILE__."::".__FUNCTION__, 
+                                                    __LINE__);
+            }
+
+            $content_table_name = $db_answer->fetch_assoc () ['content_table'];
+            ///////////////////////////////////////////////////////////////////
+
+            $db_answer = DB::request ("
+                SELECT *
+                FROM `$content_table_name`
+            ");
+            if ($db_answer instanceof Answer) {
+                return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                __LINE__);
+            }
+
+            $tasks = Array ();
+            for ($i = 0; $i < $db_answer->num_rows; $i ++) {
+                $task_data = $db_answer->fetch_assoc ();
+                $tasks [$task_data ['index']] = Array (
+                    'name' => $task_data ['name'],
+                    'rating' => $task_data ['rating']
+                );
+            }
+
+            return $S_REQ_DONE->cmt ($tasks,
+                                        __FILE__."::".__FUNCTION__, 
+                                        __LINE__);
+        }
+
     }
 
 ?>

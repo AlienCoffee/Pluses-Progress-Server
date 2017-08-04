@@ -128,6 +128,24 @@
                 "function": "register_attempt",
                 "arguments": ["user_id", "group_id", "topic_id", "problem", "result"],
                 "rights": "v**tm"
+            },
+            "getTopicContent": {
+                "function": "get_topic_content",
+                "arguments": ["topic_id"],
+                "rights": "v"
+            }
+        },
+        "other": {
+            "#file": {
+                "src": "other.php",
+                "type": "lib",
+                "rights": "v"
+            },
+
+            "registerDevice": {
+                "function": "register_device",
+                "arguments": ["hash", "name", "system"],
+                "rights": "v"
             }
         },
         "test": {
