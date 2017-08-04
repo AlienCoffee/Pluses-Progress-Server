@@ -128,6 +128,7 @@
 
         public static function create_user ($phone, $hpass, $hcode = "none") {
             global $E_EXP_NOT_IN_PHONE_FORMAT,
+                    $E_EXP_NOT_IN_HEX_FORMAT,
                     $E_WRONG_INVITE_CODE,
                     $E_USER_EXISTS,
                     $S_REQ_DONE;
@@ -169,6 +170,22 @@
                 }
 
                 $rights = $db_answer->fetch_assoc () ['value'];
+
+                $db_answer = DB::request ("
+                    DELETE
+                    FROM `codes`
+                    WHERE `hcode` = '$hcode'
+                        AND `type` = 'rights'
+                    LIMIT 1
+                ");
+                if ($db_answer instanceof Answer) {
+                    return $db_answer->addTrace (__FILE__."::".__FUNCTION__, 
+                                                    __LINE__);
+                }
+            } else {
+                return $E_EXP_NOT_IN_HEX_FORMAT->cmt ("invite_code",
+                                                        __FILE__."::".__FUNCTION__, 
+                                                        __LINE__);
             }
 
             $fake_name = random_string (32);
