@@ -1,0 +1,79 @@
+{
+    "home": {
+        "#file": {
+            "src": "home.php",
+            "type": "page",
+            "rights": "v"
+        }
+    },
+    "api": {
+        "#file": {
+            "src": "api.php",
+            "type": "page",
+            "rights": "v"
+        },
+
+        "users": {
+            "#file": {
+                "src": "users_manip.php",
+                "type": "class",
+                "class": "UsersManip",
+                "rights": "v"
+            },
+
+            "authorizeUser": {
+                "function": "auth",
+                "arguments": ["phone", "password", "?device_code"],
+                "rights": "v"
+            },
+            "createUser": {
+                "function": "create_user",
+                "arguments": ["phone", "password", "?invite_code"],
+                "rights": "v"
+            },
+            "getUserData": {
+                "function": "get_user_data",
+                "arguments": ["user_id"],
+                "rights": "vu"
+            },
+            "existsUser": {
+                "function": "does_user_exist",
+                "arguments": ["user_id"],
+                "rights": "v"
+            }
+        },
+        "groups": {
+            "#file": {
+                "src": "groups_manip.php",
+                "type": "class",
+                "class": "GroupsManip",
+                "rights": "v"
+            },
+
+            "createGroup": {
+                "function": "create_group",
+                "arguments": ["name", "head_teacher"],
+                "rights": "v*g"
+            }
+        },
+        "test": {
+            "#file": {
+                "src": "test.php",
+                "type": "class",
+                "class": "Test",
+                "rights": "v"
+            },
+
+            "ping": {
+                "function": "ping",
+                "arguments": [],
+                "rights": "v"
+            },
+            "info": {
+                "function": "info",
+                "arguments": [],
+                "rights": "v"
+            }
+        }
+    }
+}
